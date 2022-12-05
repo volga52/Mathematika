@@ -54,7 +54,7 @@ class Excerpt(metaclass=Singleton):
         try:
             returned_string = next(self.excerpts)
         # Если афоризмы закончились перезапускаем класс
-        except:
+        except StopIteration:
             self.__init__()
             returned_string = self.string_default
         return returned_string

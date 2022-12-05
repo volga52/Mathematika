@@ -46,11 +46,11 @@ class MathNumericalEquation:
             self.d = self.generation_number()
         if self.cod == FRACTION:
             # Для дробей используем генератор дробей
-            gen_number = self.gen_number
-            gen_number.generation_fraction()
-            self.a = gen_number.a
-            self.b = gen_number.b
-            self.d = gen_number.d
+            gen_numbers = self.gen_number
+            gen_numbers.generation_fraction()
+            self.a = gen_numbers.a
+            self.b = gen_numbers.b
+            self.d = gen_numbers.d
 
     def get_values(self):
         """

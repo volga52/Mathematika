@@ -1,7 +1,7 @@
 from random import shuffle
 import colorama
 
-from config import SOUP_FILE
+from config import SOUP_FILE, SLOGAN_APHORISM
 
 
 class Singleton(type):
@@ -23,11 +23,10 @@ class Singleton(type):
 
 class Excerpt(metaclass=Singleton):
     """
-    Класс содержит и возвращает строки из файла (по умолчанию 'soul.txt')
-    В дополнение содержит функции вывода цветного шрифта
+    Класс содержит и возвращает строки из файла (по умолчанию файл 'soul.txt')
+    В дополнение, содержит функции вывода цветного шрифта
     """
 
-    # def __init__(self, file_name='soul.txt'):
     def __init__(self, file_name=SOUP_FILE):
         self.file_name = file_name
         self.excerpts = self.get_excerpt()
@@ -40,10 +39,14 @@ class Excerpt(metaclass=Singleton):
     @property
     def get_text(self):
         """Возвращает список строк файла"""
-        with open(self.file_name, 'r', encoding='utf-8') as file_text:
-            text_list = [line for line in file_text]
-            shuffle(text_list)
-            return text_list
+        try:
+            with open(self.file_name, 'r', encoding='utf-8') as file_text:
+                text_list = [line for line in file_text]
+                shuffle(text_list)
+        except FileNotFoundError:
+            text_list = [SLOGAN_APHORISM for i in range(10)]
+
+        return text_list
 
     @property
     def get_new_excerpt(self):

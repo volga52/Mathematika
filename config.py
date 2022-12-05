@@ -14,7 +14,7 @@ DIFFICULTY_LEVEL = '1'
 SLOGAN_APHORISM = 'Математика царица наук'
 # Имя файла, содержащего афоризмы
 # SOUP_FILE = 'soul.txt'
-SOUP_FILE = 'aphorism/soul.txt'
+SOUP_FILE = 'aphorisms/soul.txt'
 
 # Список отрицаний
 LIST_OF_NEGATIVES = ['не', 'no', "don't"]

@@ -1,8 +1,8 @@
 .idea
 __pycache__/
 .vscode/
-media/
 archive/
+logs/files/
 *.pyc
 db.sqlite3
 .env

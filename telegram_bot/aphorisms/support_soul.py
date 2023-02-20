@@ -1,7 +1,9 @@
 from random import shuffle
 import colorama
+from pathlib import Path
+import pathlib
 
-from telegram_bot.setting.config import SOUP_FILE, SLOGAN_APHORISM
+from telegram_bot.setting.config import SOUP_FILE, SLOGAN_APHORISM, BASE_DIR
 
 
 class Singleton(type):
@@ -39,13 +41,15 @@ class Excerpt(metaclass=Singleton):
     @property
     def get_text(self):
         """Возвращает список строк файла"""
+        # path = pathlib.Path(__file__).resolve().parent
+        path = Path(__file__).resolve().parent
         try:
-            with open(self.file_name, 'r', encoding='utf-8') as file_text:
+            with open(f'{path}/{SOUP_FILE}', 'r', encoding='utf-8') \
+                    as file_text:
                 text_list = [line for line in file_text]
                 shuffle(text_list)
         except FileNotFoundError:
             text_list = [SLOGAN_APHORISM for i in range(10)]
-
         return text_list
 
     @property

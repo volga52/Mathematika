@@ -27,8 +27,7 @@ LOG_MATH.addHandler(STREAM_HANDLER)
 LOG_MATH.addHandler(NAME_LOG_FILE)
 LOG_MATH.setLevel(LOGGING_LEVEL)
 
-if __name__ == '__name__':
-# if __name__ == '__main__':
+if __name__ == '__main__':
     LOG_MATH.critical('Критическая ошибка')
     LOG_MATH.error('Ошибка')
     LOG_MATH.debug('Отладочная информация')

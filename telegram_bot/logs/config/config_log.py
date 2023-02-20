@@ -1,21 +1,12 @@
 import logging.handlers
-import os
+from pathlib import Path
 import sys
 
-# sys.path.append('../.')
-PATH = os.getcwd()
-path = os.path.split(PATH)[0]
-sys.path.append(path)
 
 LOGGING_LEVEL = 'DEBUG'
 
-# PATH = os.path.dirname(os.path.abspath(__file__))
-# PATH = os.path.join(os.path.split(PATH)[0], r'files\math.log')
-
-# PATH = os.getcwd()
-# PATH = os.path.join(PATH, r'logs\files\math.log')
-PATH = os.path.join(path, r'logs\files\math.log')
-
+PATH = Path(__file__).resolve().parent.parent
+PATH = f'{PATH}/files/math.log'
 
 LOG_MATH = logging.getLogger('mathic')
 FORMATTER_FOR_MATH = logging.Formatter('%(asctime)-27s %(levelname)-10s %(filename)-23s %(message)s')

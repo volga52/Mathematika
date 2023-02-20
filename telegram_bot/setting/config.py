@@ -25,6 +25,7 @@ DB_HOST = config.db_host
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # путь до базы данных
 DATABASE = os.path.join('sqlite:///'+BASE_DIR, DB_NAME)
+print('DB', DATABASE)
 
 """Программные настройки"""
 # Количество уравнений
@@ -36,17 +37,16 @@ VALUE_MIN_FOR_SIMPLE_EQUATIONS_START = 10
 VALUE_MAX_FOR_SIMPLE_EQUATIONS_START = 20
 
 # Словарь для определения сложности находится в файле fractions_my_math.py
-# Уровень сложности для дробей (код от 1 до 10), type => str
-DIFFICULTY_LEVEL = '1'
+# Уровень сложности для дробей (код от 1 до 10)
+DIFFICULTY_LEVEL: str = '1'
 
 # Лозунг - основной афоризм
 SLOGAN_APHORISM = 'Математика царица наук'
-# Имя файла, содержащего афоризмы
-# SOUP_FILE = 'soul.txt'
-SOUP_FILE = 'telegram_bot/aphorisms/soul.txt'
+# Имя файла, содержащего афоризмы. В одной директории с файлом support_soul.py
+SOUP_FILE: str = 'soul.txt'
 
 # Список отрицаний
-LIST_OF_NEGATIVES = ['не', 'no', "don't"]
+LIST_OF_NEGATIVES: list = ['не', 'no', "don't"]
 
 
 if __name__ == '__main__':

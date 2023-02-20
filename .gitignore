@@ -1,9 +1,10 @@
-.idea
-__pycache__/
-.vscode/
+/.idea
+/__pycache__/
+/.vscode/
 archive/
-logs/files/
+/logs/files/
 *.pyc
+*.sqlite*
 db.sqlite3
 .env
 venv

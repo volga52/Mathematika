@@ -1,7 +1,6 @@
 from random import shuffle
 import colorama
 from pathlib import Path
-import pathlib
 
 from telegram_bot.setting.config import SOUP_FILE, SLOGAN_APHORISM, BASE_DIR
 
@@ -41,7 +40,6 @@ class Excerpt(metaclass=Singleton):
     @property
     def get_text(self):
         """Возвращает список строк файла"""
-        # path = pathlib.Path(__file__).resolve().parent
         path = Path(__file__).resolve().parent
         try:
             with open(f'{path}/{SOUP_FILE}', 'r', encoding='utf-8') \

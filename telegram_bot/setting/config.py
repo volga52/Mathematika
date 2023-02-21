@@ -25,7 +25,7 @@ DB_HOST = config.db_host
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # путь до базы данных
 DATABASE = os.path.join('sqlite:///'+BASE_DIR, DB_NAME)
-print('DB', DATABASE)
+# print('DB', DATABASE)
 
 """Программные настройки"""
 # Количество уравнений

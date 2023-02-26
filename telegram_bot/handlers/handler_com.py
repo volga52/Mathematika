@@ -23,11 +23,18 @@ class HandlerCommands(Handler):
         msg = text(bold(HELP_PREVIEW), *HELP_COM_LIST, sep='\n')
         await message.reply(msg, parse_mode=ParseMode.MARKDOWN_V2)
 
+    async def process_matematica_command(self, message: types.Message):
+        txt = f'{message.from_user.username}! {MATICA_SALUTE}'
+        # await message.reply(txt)
+        await message.answer(txt, reply_markup=ReplyKeyboardRemove())
+
     def handler(self):
         self.dp.register_message_handler(self.process_start_command,
                                          commands=['start'])
         self.dp.register_message_handler(self.process_help_command,
                                          commands=['help'])
+        self.dp.register_message_handler(self.process_matematica_command,
+                                         commands=['matematica'])
 
 
 class HandlerEcho(Handler):

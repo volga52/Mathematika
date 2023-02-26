@@ -13,7 +13,7 @@ class Keyboards:
 
     def menu_on_start(self):
         """Стартовая клавиатура"""
-        button_01 = KeyboardButton('/test')
+        button_01 = KeyboardButton('/matematica')
         button_02 = KeyboardButton('/Описание')
         button_03 = KeyboardButton('/help')
 

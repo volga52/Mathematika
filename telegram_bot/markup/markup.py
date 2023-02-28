@@ -1,6 +1,6 @@
 from aiogram import types
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, \
-    ReplyKeyboardRemove
+    ReplyKeyboardRemove, InlineKeyboardButton
 
 
 class Keyboards:
@@ -23,4 +23,28 @@ class Keyboards:
 
         return self.markup
 
+    def menu_on_pressed_startup(self):
+        """Инлайн клавиатура для команды matematica"""
+        # btn_1 = KeyboardButton('/startup')
+        btn_1 = KeyboardButton('/начать')
+        btn_2 = KeyboardButton('other')
+
+        self.markup = ReplyKeyboardMarkup(True, True, row_width=3)
+        self.markup.add(btn_1).insert(btn_2)
+
+        return self.markup
+
+    @staticmethod
+    def set_inline_btn(value):
+        """
+        Создает и возвращает инлайн-кнопку по входным параметрам
+        """
+        return InlineKeyboardButton(str(value), callback_data=str(value.name))
+
+    @staticmethod
+    def remove_menu():
+        """
+        Удаляет кнопки из меню и возвращает пустое меню
+        """
+        return ReplyKeyboardRemove()
 

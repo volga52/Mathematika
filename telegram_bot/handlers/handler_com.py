@@ -1,7 +1,7 @@
 # import asyncio
 from aiogram import types
 from aiogram.utils.markdown import text, bold, italic, code
-from aiogram.types import ParseMode, ContentType, ReplyKeyboardRemove
+from aiogram.types import ParseMode, ContentType
 from emoji import emojize
 
 from telegram_bot.handlers.handler import Handler
@@ -24,9 +24,14 @@ class HandlerCommands(Handler):
         await message.reply(msg, parse_mode=ParseMode.MARKDOWN_V2)
 
     async def process_matematica_command(self, message: types.Message):
-        txt = f'{message.from_user.username}! {MATICA_SALUTE}'
+        txt = f'{message.from_user.first_name}! {MATICA_SALUTE}'
         # await message.reply(txt)
-        await message.answer(txt, reply_markup=ReplyKeyboardRemove())
+        await message.answer(txt, reply_markup=self.markup.remove_menu())
+        await message.answer(
+            'Начать?', reply_markup=self.markup.menu_on_pressed_startup())
+
+    async def process_startup_command(self, message: types.Message):
+        await message.answer('OK', reply_markup=self.markup.remove_menu())
 
     def handler(self):
         self.dp.register_message_handler(self.process_start_command,
@@ -35,6 +40,10 @@ class HandlerCommands(Handler):
                                          commands=['help'])
         self.dp.register_message_handler(self.process_matematica_command,
                                          commands=['matematica'])
+        # self.dp.register_message_handler(self.process_startup_command,
+        #                                  commands=['startup'])
+        self.dp.register_message_handler(self.process_startup_command,
+                                         commands=['начать'])
 
 
 class HandlerEcho(Handler):
@@ -57,3 +66,8 @@ class HandlerEcho(Handler):
         self.dp.register_message_handler(self.echo_message)
         self.dp.register_message_handler(self.unknown_message,
                                          content_types=ContentType.ANY)
+
+    @staticmethod
+    def check_is_digit(value):
+        if value.isdigit():
+            pass

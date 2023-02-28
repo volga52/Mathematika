@@ -30,8 +30,12 @@ class HandlerCommands(Handler):
         await message.answer(
             'Начать?', reply_markup=self.markup.menu_on_pressed_startup())
 
+    # Команда '/начать'
     async def process_startup_command(self, message: types.Message):
         await message.answer('OK', reply_markup=self.markup.remove_menu())
+        self.dp.math_element.main()
+        text_eq = self.dp.math_element.message_dict.get('equations')
+        await self.bot.send_message(message.from_user.id, text_eq)
 
     def handler(self):
         self.dp.register_message_handler(self.process_start_command,

@@ -28,6 +28,9 @@ DATABASE = os.path.join('sqlite:///'+BASE_DIR, DB_NAME)
 # print('DB', DATABASE)
 
 """Программные настройки"""
+NUMBER = 'number'
+FRACTION = 'fraction'
+
 # Количество уравнений
 NUMBER_SIMPLE_EQUATIONS = 10
 NUMBER_CHECK_FRACTIONS = 10

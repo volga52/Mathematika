@@ -4,6 +4,7 @@ from aiogram.utils.markdown import text, bold, italic, code
 from aiogram.types import ParseMode, ContentType
 from emoji import emojize
 
+from telegram_bot.FSM.equation_fsm import FSMEquation
 from telegram_bot.handlers.handler import Handler
 from telegram_bot.setting.messages import *
 

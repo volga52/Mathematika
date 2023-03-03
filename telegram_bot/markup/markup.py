@@ -1,6 +1,8 @@
 from aiogram import types
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, \
-    ReplyKeyboardRemove, InlineKeyboardButton
+    ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
+
+list_task = ('number', 'fractions')
 
 
 class Keyboards:
@@ -12,7 +14,7 @@ class Keyboards:
         self.DB = None
 
     def menu_on_start(self):
-        """Стартовая клавиатура"""
+        """Создает и возвращает стартовую клавиатуру"""
         button_01 = KeyboardButton('/matematica')
         button_02 = KeyboardButton('/Описание')
         button_03 = KeyboardButton('/help')
@@ -24,7 +26,7 @@ class Keyboards:
         return self.markup
 
     def menu_on_pressed_startup(self):
-        """Инлайн клавиатура для команды matematica"""
+        """Создает и возвращает клавиатуру для команды matematica"""
         # btn_1 = KeyboardButton('/startup')
         btn_1 = KeyboardButton('/начать')
         btn_2 = KeyboardButton('other')
@@ -34,12 +36,21 @@ class Keyboards:
 
         return self.markup
 
+    def tasks_inline_kb(self):
+        """Создает и возвращает inline клавиатуру: выбор типа задания"""
+        self.markup = InlineKeyboardMarkup(row_width=2)
+        for names_btn in list_task:
+            button_inline = self.set_inline_btn_str(names_btn)
+            # self.markup.add(button_inline)
+            self.markup.insert(button_inline)
+        return self.markup
+
     @staticmethod
-    def set_inline_btn(value):
+    def set_inline_btn_str(value: str):
         """
-        Создает и возвращает инлайн-кнопку по входным параметрам
+        Создает и возвращает inline-кнопку по входному параметру-строке
         """
-        return InlineKeyboardButton(str(value), callback_data=str(value.name))
+        return InlineKeyboardButton(value, callback_data=value)
 
     @staticmethod
     def remove_menu():
@@ -47,4 +58,3 @@ class Keyboards:
         Удаляет кнопки из меню и возвращает пустое меню
         """
         return ReplyKeyboardRemove()
-

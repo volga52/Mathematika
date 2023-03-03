@@ -38,6 +38,9 @@ class HandlerCommands(Handler):
         text_eq = self.dp.math_element.message_dict.get('equations')
         await self.bot.send_message(message.from_user.id, text_eq)
 
+    async def process_fsm_command(self, message: types.Message):
+        await message.answer('Inline_choice', reply_markup=self.markup.tasks_inline_kb())
+
     def handler(self):
         self.dp.register_message_handler(self.process_start_command,
                                          commands=['start'])
@@ -49,6 +52,8 @@ class HandlerCommands(Handler):
         #                                  commands=['startup'])
         self.dp.register_message_handler(self.process_startup_command,
                                          commands=['начать'])
+        self.dp.register_message_handler(self.process_fsm_command,
+                                         commands=['choice'])
 
 
 class HandlerEcho(Handler):

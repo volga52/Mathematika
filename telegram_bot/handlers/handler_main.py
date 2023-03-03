@@ -1,5 +1,6 @@
 from telegram_bot.handlers.handler_com import HandlerCommands, HandlerEcho
 from telegram_bot.handlers.handler_fsm import HandlerFSM
+from telegram_bot.handlers.handler_inline import HandlerInline
 
 
 class HandlerMain:
@@ -9,10 +10,13 @@ class HandlerMain:
         self.handler_commands = HandlerCommands(self.dp)
         self.handler_echo_end = HandlerEcho(self.dp)
         self.handler_fsm = HandlerFSM(self.dp)
+        self.handler_inline = HandlerInline(self.dp)
 
     def handle(self):
+        """Инициация обработчиков"""
         self.handler_commands.handler()
         self.handler_fsm.handler()
+        self.handler_inline.handler()
 
         # самый последний обработчик
         self.handler_echo_end.handler()

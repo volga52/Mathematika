@@ -2,7 +2,8 @@ import os
 
 from telegram_bot.setting.setting_core import Settings
 
-"""Системные настройки"""
+
+'''Системные настройки'''
 config = Settings()
 
 # id самого бота, получено экспериментально
@@ -27,9 +28,15 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join('sqlite:///'+BASE_DIR, DB_NAME)
 # print('DB', DATABASE)
 
-"""Программные настройки"""
+'''Настройки для бота'''
+# Список команд для help
+HELP_COM_LIST: list = ['/test', '/help', '/matematica', '/начать', '/choice']
+
+'''Программные настройки для блока matematica'''
 NUMBER = 'number'
 FRACTION = 'fraction'
+LIST_TASK: tuple = (NUMBER, FRACTION)
+DICT_TASK: dict = {'числа': NUMBER, 'дроби': FRACTION}
 
 # Количество уравнений
 NUMBER_SIMPLE_EQUATIONS = 10

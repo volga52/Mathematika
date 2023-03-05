@@ -5,6 +5,7 @@ from aiogram.types import ParseMode, ContentType
 from emoji import emojize
 
 from telegram_bot.handlers.handler import Handler
+from telegram_bot.setting.config import HELP_COM_LIST
 from telegram_bot.setting.messages import *
 
 

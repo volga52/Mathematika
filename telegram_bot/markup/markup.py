@@ -1,11 +1,13 @@
-from aiogram import types
+# from aiogram import types
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, \
     ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
 
-NUMBER = 'number'
-FRACTION = 'fractions'
+from telegram_bot.setting.config import LIST_TASK
 
-list_task = (NUMBER, FRACTION)
+# NUMBER = 'number'
+# FRACTION = 'fractions'
+#
+# list_task = (NUMBER, FRACTION)
 
 
 class Keyboards:
@@ -30,29 +32,28 @@ class Keyboards:
 
     def menu_on_pressed_startup(self):
         """Создает и возвращает клавиатуру для команды matematica"""
-        # btn_1 = KeyboardButton('/startup')
-        btn_1 = KeyboardButton('/начать')
-        btn_2 = KeyboardButton('other')
+        button_1 = KeyboardButton('/начать')
+        button_2 = KeyboardButton('other')
 
         self.markup = ReplyKeyboardMarkup(True, True, row_width=3)
-        self.markup.add(btn_1).insert(btn_2)
+        self.markup.add(button_1).insert(button_2)
 
         return self.markup
 
     def set_task(self):
         """Создаёт и возвращает клавиатуру для определения вида задания"""
-        btn_1 = KeyboardButton('/простые_числа')
-        btn_2 = KeyboardButton('/просто_дроби')
+        button_1 = KeyboardButton('/простые_числа')
+        button_2 = KeyboardButton('/просто_дроби')
 
-        self.markup = ReplyKeyboardMarkup(True, True, is_persistent=True)
-        self.markup.insert(btn_1).insert(btn_2)
+        self.markup = ReplyKeyboardMarkup(True, True)
+        self.markup.insert(button_1).insert(button_2)
 
         return self.markup
 
     def tasks_inline_kb(self):
         """Создает и возвращает inline клавиатуру: выбор типа задания"""
         self.markup = InlineKeyboardMarkup(row_width=2)
-        for names_btn in list_task:
+        for names_btn in LIST_TASK:
             button_inline = self.set_inline_btn_str(names_btn)
             # self.markup.add(button_inline)
             self.markup.insert(button_inline)

@@ -6,7 +6,7 @@ from aiogram import types
 
 from telegram_bot.FSM.equation_fsm import FSMEquation
 from telegram_bot.handlers.handler import Handler
-from telegram_bot.setting.messages import DICT_TASK
+from telegram_bot.setting.config import DICT_TASK
 
 
 class HandlerFSM(Handler):
@@ -19,13 +19,6 @@ class HandlerFSM(Handler):
         self.gen = self.generator()
         self.math_cod = None
 
-    # async def process_setstate_command(self, message: types.Message):
-    #     """Функция запускает первый этап машинного состояния"""
-    #     await FSMEquation.first.set()
-    #     await self.bot.send_message(message.from_user.id,
-    #                                 'start test',
-    #                                 reply_markup=self.markup.remove_menu())
-
     async def set_state(self, message: types.Message):
         """Функция запускает первый этап машинного состояния"""
         await FSMEquation.first.set()
@@ -34,6 +27,7 @@ class HandlerFSM(Handler):
                                     reply_markup=self.markup.remove_menu())
 
     async def process_tasks_command(self, message: types.Message):
+        """Устанавливает тип уравнений. Запускает FSM состояние"""
         await message.answer('OK', reply_markup=self.markup.remove_menu())
         # Получение ответа с кнопки
         cod = message.text.split('_')[1]
@@ -42,16 +36,18 @@ class HandlerFSM(Handler):
         # Инициация элемента математики
         # По окончании требуется очистка
 
-        a = self.math_init()
+        a = await self.math_init()
         await self.bot.send_message(message.from_user.id, a)
 
         await self.set_state(message)
 
-    def math_init(self):
+    async def math_init(self):
+        """Инициирует математический блок"""
         self.dp.math_element.main(self.math_cod)
-        text_eq = self.dp.math_element.message_dict.get('equations', 'None')
-        print(text_eq)
-        return text_eq
+        text_equation = self.dp.math_element.message_dict.get('equations',
+                                                              'None')
+        print(text_equation)
+        return text_equation
 
     async def process_cancel_equation(self, message: types.Message,
                                       state: FSMContext):

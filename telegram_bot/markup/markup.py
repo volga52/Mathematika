@@ -2,7 +2,10 @@ from aiogram import types
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, \
     ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
 
-list_task = ('number', 'fractions')
+NUMBER = 'number'
+FRACTION = 'fractions'
+
+list_task = (NUMBER, FRACTION)
 
 
 class Keyboards:
@@ -33,6 +36,16 @@ class Keyboards:
 
         self.markup = ReplyKeyboardMarkup(True, True, row_width=3)
         self.markup.add(btn_1).insert(btn_2)
+
+        return self.markup
+
+    def set_task(self):
+        """Создаёт и возвращает клавиатуру для определения вида задания"""
+        btn_1 = KeyboardButton('/простые_числа')
+        btn_2 = KeyboardButton('/просто_дроби')
+
+        self.markup = ReplyKeyboardMarkup(True, True, is_persistent=True)
+        self.markup.insert(btn_1).insert(btn_2)
 
         return self.markup
 

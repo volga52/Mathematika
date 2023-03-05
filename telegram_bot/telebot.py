@@ -9,7 +9,7 @@ from telegram_bot.matematica.matic_bot import MaticBotElem
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
-dp.math_element = MaticBotElem(NUMBER)
+dp.math_element = MaticBotElem()
 
 handlers = HandlerMain(dp)
 handlers.handle()

@@ -6,6 +6,7 @@ from aiogram import types
 
 from telegram_bot.FSM.equation_fsm import FSMEquation
 from telegram_bot.handlers.handler import Handler
+from telegram_bot.setting.messages import DICT_TASK
 
 
 class HandlerFSM(Handler):
@@ -14,12 +15,43 @@ class HandlerFSM(Handler):
         self.storage = MemoryStorage()
         super().__init__(dp=dp)
         self.dp.storage = self.storage
-        self.gen = self.generator()
 
-    async def process_setstate_command(self, message: types.Message):
+        self.gen = self.generator()
+        self.math_cod = None
+
+    # async def process_setstate_command(self, message: types.Message):
+    #     """Функция запускает первый этап машинного состояния"""
+    #     await FSMEquation.first.set()
+    #     await self.bot.send_message(message.from_user.id,
+    #                                 'start test',
+    #                                 reply_markup=self.markup.remove_menu())
+
+    async def set_state(self, message: types.Message):
         """Функция запускает первый этап машинного состояния"""
         await FSMEquation.first.set()
-        await message.reply('start test', reply=False)
+        await self.bot.send_message(message.from_user.id,
+                                    'start test',
+                                    reply_markup=self.markup.remove_menu())
+
+    async def process_tasks_command(self, message: types.Message):
+        await message.answer('OK', reply_markup=self.markup.remove_menu())
+        # Получение ответа с кнопки
+        cod = message.text.split('_')[1]
+        self.math_cod = DICT_TASK.get(cod)
+
+        # Инициация элемента математики
+        # По окончании требуется очистка
+
+        a = self.math_init()
+        await self.bot.send_message(message.from_user.id, a)
+
+        await self.set_state(message)
+
+    def math_init(self):
+        self.dp.math_element.main(self.math_cod)
+        text_eq = self.dp.math_element.message_dict.get('equations', 'None')
+        print(text_eq)
+        return text_eq
 
     async def process_cancel_equation(self, message: types.Message,
                                       state: FSMContext):
@@ -66,8 +98,11 @@ class HandlerFSM(Handler):
         await state.finish()
 
     def handler(self):
-        self.dp.register_message_handler(self.process_setstate_command,
-                                         state='*', commands=['startup'])
+        self.dp.register_message_handler(
+            self.process_tasks_command,
+            state='*',
+            commands=['простые_числа', 'просто_дроби'])
+
         self.dp.register_message_handler(self.process_cancel_equation,
                                          state='*', commands=['cancel'])
         self.dp.register_message_handler(self.process_cancel_equation, Text(

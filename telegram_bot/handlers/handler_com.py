@@ -4,7 +4,6 @@ from aiogram.utils.markdown import text, bold, italic, code
 from aiogram.types import ParseMode, ContentType
 from emoji import emojize
 
-from telegram_bot.FSM.equation_fsm import FSMEquation
 from telegram_bot.handlers.handler import Handler
 from telegram_bot.setting.messages import *
 
@@ -32,11 +31,14 @@ class HandlerCommands(Handler):
             'Начать?', reply_markup=self.markup.menu_on_pressed_startup())
 
     # Команда '/начать'
-    async def process_startup_command(self, message: types.Message):
-        await message.answer('OK', reply_markup=self.markup.remove_menu())
-        self.dp.math_element.main()
-        text_eq = self.dp.math_element.message_dict.get('equations')
-        await self.bot.send_message(message.from_user.id, text_eq)
+    async def process_taskstart_command(self, message: types.Message):
+        await message.answer(f'{message.from_user.first_name} выбери занятие',
+                             reply_markup=self.markup.remove_menu())
+        await self.bot.send_message(
+            message.from_user.id,
+            text='Уравнение с какими элементами будем решать?',
+            reply_markup=self.markup.set_task()
+        )
 
     async def process_fsm_command(self, message: types.Message):
         await message.answer('Inline_choice', reply_markup=self.markup.tasks_inline_kb())
@@ -48,12 +50,10 @@ class HandlerCommands(Handler):
                                          commands=['help'])
         self.dp.register_message_handler(self.process_matematica_command,
                                          commands=['matematica'])
-        # self.dp.register_message_handler(self.process_startup_command,
-        #                                  commands=['startup'])
-        self.dp.register_message_handler(self.process_startup_command,
-                                         commands=['начать'])
         self.dp.register_message_handler(self.process_fsm_command,
                                          commands=['choice'])
+        self.dp.register_message_handler(self.process_taskstart_command,
+                                         commands=['начать'])
 
 
 class HandlerEcho(Handler):
@@ -64,6 +64,7 @@ class HandlerEcho(Handler):
         super().__init__(dispatcher)
 
     async def echo_message(self, msg: types.Message):
+        print('echo')
         await self.bot.send_message(msg.from_user.id, msg.text)
 
     async def unknown_message(self, msg: types.Message):

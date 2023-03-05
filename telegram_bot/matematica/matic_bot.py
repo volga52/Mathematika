@@ -19,7 +19,7 @@ logger = logging.getLogger('matic')
 
 class MaticBotElem:
     """Класс оперирует уравнениями"""
-    def __init__(self, cod):
+    def __init__(self, cod=None):
         # self.dp = dp
         # self.excerpts = Excerpt()
         # self.excerpts.string_default = SLOGAN_APHORISM
@@ -31,9 +31,9 @@ class MaticBotElem:
                              'excerpts': None,
                              'answer': None}
 
-    def main(self):
+    def main(self, cod):
         # Определяемся с видом уравнения или выход
-        # self.cod = cod
+        self.cod = cod
         if self.cod == NUMBER:
             self.message_dict['equations'] = self.simple_equations()
         elif self.cod == FRACTION:

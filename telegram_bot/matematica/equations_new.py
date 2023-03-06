@@ -171,6 +171,8 @@ class MathNumericalEquation:
         return finish_string
 
 
+
+
 if __name__ == '__main__':
     a = MathNumericalEquation()
     print(a.get_equation)

@@ -7,6 +7,8 @@ from aiogram import types
 from telegram_bot.FSM.equation_fsm import FSMEquation
 from telegram_bot.handlers.handler import Handler
 from telegram_bot.setting.config import DICT_TASK
+from telegram_bot.setting.messages import MATICA_PREVIEW, DICT_MES_PREVIEW, \
+    CANCEL_MES_PREVIEW
 
 
 class HandlerFSM(Handler):
@@ -22,8 +24,9 @@ class HandlerFSM(Handler):
     async def set_state(self, message: types.Message):
         """Функция запускает первый этап машинного состояния"""
         await FSMEquation.first.set()
-        await self.bot.send_message(message.from_user.id,
-                                    'start test',
+        text_rules = f"{MATICA_PREVIEW} {DICT_MES_PREVIEW[self.math_cod]}" \
+               f"\n{CANCEL_MES_PREVIEW}"
+        await self.bot.send_message(message.from_user.id, text_rules,
                                     reply_markup=self.markup.remove_menu())
 
     async def process_tasks_command(self, message: types.Message):
@@ -31,19 +34,21 @@ class HandlerFSM(Handler):
         await message.answer('OK', reply_markup=self.markup.remove_menu())
         # Получение ответа с кнопки
         cod = message.text.split('_')[1]
-        self.math_cod = DICT_TASK.get(cod)
+        self.math_cod = DICT_TASK[cod]
 
         # Инициация элемента математики
         # По окончании требуется очистка
 
-        a = await self.math_init()
-        await self.bot.send_message(message.from_user.id, a)
+        # a = await self.math_init()
+        # await self.bot.send_message(message.from_user.id, a)
 
         await self.set_state(message)
 
     async def math_init(self):
         """Инициирует математический блок"""
         self.dp.math_element.main(self.math_cod)
+        # Инициируется генератор self.gen = 1
+        next(self.gen)
         text_equation = self.dp.math_element.message_dict.get('equations',
                                                               'None')
         print(text_equation)
@@ -66,14 +71,19 @@ class HandlerFSM(Handler):
         async with state.proxy() as data:
             first = message.text
             data['first'] = first
-        await FSMEquation.next()
-        await message.reply(f"First '{first}' argument", reply=False)
 
-    async def excerpt_state_equation(self, message: types.Message,
-                                     state: FSMContext):
+        await self.bot.send_message(message.from_user.id, 'first_start')
+        await FSMEquation.next()
+        await self.api_fsm(message)
+        # await message.reply(f"First '{first}' argument", reply=False)
+
+    async def excerpt_state_equation(self, message: types.Message,):
         """Вывод фразы цитаты"""
         await FSMEquation.next()
         await message.reply("Excerpt", reply=False)
+        text_equation = self.dp.math_element.message_dict.get('equations',
+                                                              'None')
+        await message.answer(text_equation)
 
     async def test_state_equation(self, message: types.Message,
                                   state: FSMContext):
@@ -92,6 +102,19 @@ class HandlerFSM(Handler):
         await message.reply("Last", reply=False)
 
         await state.finish()
+
+    async def api_fsm(self, message: types.Message):
+        """Управление элементами FSM машины"""
+        # Если генератора нет инициируем math
+        if self.dp.math_element.message_dict.get('number_test') == 0:
+            # первое уравнение
+            first_ex = await self.math_init()
+            message.text = first_ex
+            print(first_ex)
+            await self.bot.send_message(message.from_user.id, 'math_start')
+            await self.excerpt_state_equation(message)
+        else:
+            pass
 
     def handler(self):
         self.dp.register_message_handler(
@@ -118,3 +141,7 @@ class HandlerFSM(Handler):
         for i in range(number):
             print(f'Next {i}')
             yield i + 1
+
+    def temp(self, my_object):
+        for i in ['close', 'gi_code', 'gi_frame', 'gi_running', 'gi_yieldfrom', 'send', 'throw']:
+            print(my_object[i])

@@ -33,7 +33,7 @@ class HandlerCommands(Handler):
 
     # Команда '/начать'
     async def process_taskstart_command(self, message: types.Message):
-        await message.answer(f'{message.from_user.first_name} выбери занятие',
+        await message.answer(f'{message.from_user.first_name}, выбери занятие',
                              reply_markup=self.markup.remove_menu())
         await self.bot.send_message(
             message.from_user.id,
@@ -42,7 +42,8 @@ class HandlerCommands(Handler):
         )
 
     async def process_fsm_command(self, message: types.Message):
-        await message.answer('Inline_choice', reply_markup=self.markup.tasks_inline_kb())
+        await message.answer('Inline_choice',
+                             reply_markup=self.markup.tasks_inline_kb())
 
     def handler(self):
         self.dp.register_message_handler(self.process_start_command,

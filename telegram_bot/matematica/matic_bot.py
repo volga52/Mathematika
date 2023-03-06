@@ -26,7 +26,7 @@ class MaticBotElem:
         self.username = None
         # Вид уравнений, действие
         self.cod = cod
-        self.message_dict = {'number_test': None,
+        self.message_dict = {'number_test': 0,
                              'equations': None,
                              'excerpts': None,
                              'answer': None}
@@ -55,17 +55,14 @@ class MaticBotElem:
         #     interval_values = next(level_difficulty)
         #     logger.info(f'Уравнение {i + 1}')
         #     self.message_dict.get('number_test')
-        #
-        #     game.min_ = interval_values[0]
-        #     game.max_ = interval_values[1]
-        #     game.get_equation()
 
         # Проверка работоспособности
         interval_values = next(level_difficulty)
-        # система оповещения о номере уравнения
-        number_test = f'Уравнение 1'
+        # система нумерации уравнений
+        # __меняем номер уравнения
+        self.message_dict['number_test'] += 1
+        number_test = f"Уравнение {self.message_dict.get('number_test')}"
         logger.info(number_test)
-        self.message_dict.get('number_test')
 
         game.min_ = interval_values[0]
         game.max_ = interval_values[1]

@@ -27,15 +27,12 @@ class MathNumericalEquation:
         self.max_ = 20
         # self.cod = None
         self.cod = NUMBER
-        # self.excerpts = Excerpt()
-        # Счетчик коэффициента вывода афоризма
-        # self.count_not_correct_answer = 0
         # Генератор элементов уравнения
         self.gen_number = None
 
     def set_values(self, cod):
         """
-        Функция устанавливает значения 'a', 'b', 'c'
+        Метод устанавливает значения 'a', 'b', 'c'
         для выражения вида a+(b+c)=d
         """
         self.cod = cod
@@ -158,7 +155,6 @@ class MathNumericalEquation:
     #     # Отображаем уравнение. Ввод и проверка ответа
     #     # self.evaluation(finish_string)
 
-    @property
     def get_equation(self):
         """Функция выдает уравнение"""
         # Создаем выражение a+(b+c)=d
@@ -169,8 +165,6 @@ class MathNumericalEquation:
         finish_string = self.create_rebus()
 
         return finish_string
-
-
 
 
 if __name__ == '__main__':

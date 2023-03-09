@@ -45,13 +45,14 @@ class HandlerFSM(Handler):
         await self.set_state(message)
 
     async def math_init(self):
-        """Инициирует математический блок"""
-        self.dp.math_element.main(self.math_cod)
-        # Инициируется генератор self.gen = 1
+        """Метод запускает создание математических выражений"""
+        self.dp.math_element.launch(self.math_cod)
+
+    async def get_math_value(self):
+        """Метод получает и возвращает математическое выражение"""
         next(self.gen)
-        text_equation = self.dp.math_element.message_dict.get('equations',
-                                                              'None')
-        print(text_equation)
+        text_equation = self.dp.math_element.get_main()
+        print(text_equation, 'get_math_value')
         return text_equation
 
     async def process_cancel_equation(self, message: types.Message,
@@ -81,7 +82,7 @@ class HandlerFSM(Handler):
         """Вывод фразы цитаты"""
         await FSMEquation.next()
         await message.reply("Excerpt", reply=False)
-        text_equation = self.dp.math_element.message_dict.get('equations',
+        text_equation = self.dp.math_element.message_dict.get('equation',
                                                               'None')
         await message.answer(text_equation)
 
@@ -108,9 +109,13 @@ class HandlerFSM(Handler):
         # Если генератора нет инициируем math
         if self.dp.math_element.message_dict.get('number_test') == 0:
             # первое уравнение
-            first_ex = await self.math_init()
+            # first_ex = await self.math_init()
+            await self.math_init()
+            first_ex = await self.get_math_value()
             message.text = first_ex
-            print(first_ex)
+            answer = self.dp.math_element.message_dict.get('answer')
+            print(first_ex, 'Ответ', type(answer), str(answer))
+            # print(first_ex)
             await self.bot.send_message(message.from_user.id, 'math_start')
             await self.excerpt_state_equation(message)
         else:
@@ -141,7 +146,3 @@ class HandlerFSM(Handler):
         for i in range(number):
             print(f'Next {i}')
             yield i + 1
-
-    def temp(self, my_object):
-        for i in ['close', 'gi_code', 'gi_frame', 'gi_running', 'gi_yieldfrom', 'send', 'throw']:
-            print(my_object[i])

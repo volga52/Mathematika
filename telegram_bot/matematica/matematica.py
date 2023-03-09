@@ -1,3 +1,4 @@
+"""Первоначальная программа для решения уравнений устным счетом"""
 from time import sleep
 import logging
 
@@ -13,7 +14,7 @@ from telegram_bot.matematica.fractions_my_math import GenerationFractions
 from telegram_bot.matematica.equations import MathNumericalEquation
 from telegram_bot.aphorisms.support_soul import Excerpt
 
-from telegram_bot.setting.config import BOT_TOKEN
+# from telegram_bot.setting.config import BOT_TOKEN
 
 
 logger = logging.getLogger('mathic')

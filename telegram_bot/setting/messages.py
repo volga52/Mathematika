@@ -18,3 +18,6 @@ fraction_mes_preview = f"дробь.\nДробь вводится через з�
 CANCEL_MES_PREVIEW = f"Чтобы выйти 'cancel' или '/cancel'"
 
 DICT_MES_PREVIEW = {NUMBER: number_mes_preview, FRACTION: fraction_mes_preview}
+
+# Первое уравнение с ответом
+FIRST_EXC_ANSWER: tuple = ('1 + x = 2', 1)

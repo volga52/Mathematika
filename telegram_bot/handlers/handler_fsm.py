@@ -11,6 +11,7 @@ from telegram_bot.handlers.handler import Handler
 from telegram_bot.setting.config import DICT_TASK
 from telegram_bot.setting.messages import MATICA_PREVIEW, DICT_MES_PREVIEW, \
     CANCEL_MES_PREVIEW, FIRST_EXC_ANSWER
+from typing import Generator, Optional
 
 
 class HandlerFSM(Handler):
@@ -21,22 +22,16 @@ class HandlerFSM(Handler):
         super().__init__(dp=dp)
         self.dp.storage = self.storage
 
-        # self.gen = self.generator()
-        self.gen = None
+        self.gen: Optional[Generator] = None
         self.math_cod = None
 
-    async def process_tasks_command(self, message: types.Message, state: FSMContext):
+    async def process_tasks_command(self, message: types.Message,
+                                    state: FSMContext):
         """Устанавливает тип уравнений. Запускает FSM состояние"""
         await message.answer('OK', reply_markup=self.markup.remove_menu())
         # Получение ответа с кнопки
         cod = message.text.split('_')[1]
         self.math_cod = DICT_TASK[cod]
-
-        # Инициация элемента математики
-        # По окончании требуется очистка
-
-        # a = await self.math_init()
-        # await self.bot.send_message(message.from_user.id, a)
 
         await self.set_state(message, state)
 
@@ -45,17 +40,20 @@ class HandlerFSM(Handler):
         text_rules = f"{MATICA_PREVIEW} {DICT_MES_PREVIEW[self.math_cod]}" \
                      f"\n'Набери число и жми ВВОД (ENTER)'" \
                      f"\n{CANCEL_MES_PREVIEW}"
+        await self.bot.send_message(message.from_user.id, text_rules)
         await self.bot.send_message(message.from_user.id,
                                     FIRST_EXC_ANSWER[0],
                                     reply_markup=self.markup.remove_menu())
-        await self.bot.send_message(message.from_user.id, text_rules)
         await FSMEquation.first.set()
         # state = FSMEquation.states[0]
         await self.first_state_equation(message, state)
 
     async def math_init(self):
         """Метод запускает создание математических выражений"""
+        # Инициация элемента математики
+        # По окончании требуется очистка
         self.dp.math_element.launch(self.math_cod)
+        # Установка количества уравнений
         quantity_test = self.dp.math_element.quantity_equations
         self.gen = self.generator(quantity_test)
 
@@ -63,20 +61,22 @@ class HandlerFSM(Handler):
                                    state: FSMContext):
         """Обработка первого запроса машинного состояния"""
         await self.math_init()
+        # Установка демонстрационного уравнения
+        self.dp.math_element.message_dict['equation'] = FIRST_EXC_ANSWER[0]
         self.dp.math_element.message_dict['answer'] = FIRST_EXC_ANSWER[1]
         print(self.dp.math_element.message_dict)
 
-        await self.bot.send_message(message.from_user.id, f'first_start')
+        # await self.bot.send_message(message.from_user.id, f'first_start')
         await FSMEquation.test.set()
 
     async def excerpt_state_equation(self, message: types.Message,
                                      state: FSMContext):
         """Вывод фразы цитаты"""
-        await message.answer(f'Получено {message.text}')
+        # await message.answer(f'Получено {message.text}')
 
-        await sleep(1)
+        # await sleep(1)
         text = self.dp.math_element.message_dict.get('excerpt', 'None')
-        await message.reply(f'{text}', reply=False)
+        # await message.reply(f'{text}', reply=False)
         # Реакция на правильность ответа
         if message.text == 'Yes':
             pass
@@ -85,10 +85,11 @@ class HandlerFSM(Handler):
         await FSMEquation.next()
         await self.new_equation(message, state)
 
-    async def test_state_equation(self, message: types.Message, state: FSMContext):
+    async def test_state_equation(self, message: types.Message,
+                                  state: FSMContext):
         """Обработка-работа с уравнениями"""
         await FSMEquation.excerpt.set()
-        await message.answer('Test')
+        # await message.answer('Test')
         if int(message.text) == self.dp.math_element.message_dict['answer']:
             await message.reply('Верно')
             message.text = 'Yes'
@@ -103,24 +104,25 @@ class HandlerFSM(Handler):
                 gen = next(self.gen)
                 await message.reply(f"Test {gen} ", reply=False)
                 # Получение нового уравнения
-                text_equation = self.dp.math_element.get_main()
+                self.dp.math_element.get_main()
                 value_dict = self.dp.math_element.message_dict
-                print(text_equation, 'get_math_value', value_dict)
+                print(value_dict)
 
             except StopIteration:
-                await message.reply('Finish!!!')
                 await FSMEquation.last.set()
                 await self.last_state_equation(message, state)
                 return
 
-        await message.reply(
-                self.dp.math_element.message_dict.get('equation', 'None'))
+        equation = self.dp.math_element.message_dict.get('equation', 'None')
+        await self.bot.send_message(message.from_user.id, equation)
+        # await message.reply(
+        #         self.dp.math_element.message_dict.get('equation', 'None'))
         await FSMEquation.next()
 
     async def last_state_equation(self, message: types.Message,
                                   state: FSMContext):
         """Завершение машинного состояния"""
-        await message.reply("Last", reply=False)
+        await message.reply("Last FSM_Finish!!!", reply=False)
         await state.finish()
 
     async def process_cancel_equation(self, message: types.Message,
@@ -159,5 +161,5 @@ class HandlerFSM(Handler):
     def generator(number: int = 5):
         """Генератор порядкового номера тренировочного уравнения"""
         for i in range(number):
-            print(f'Next {i}')
+            # print(f'Next {i}')
             yield i + 1

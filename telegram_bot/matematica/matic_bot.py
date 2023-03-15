@@ -1,11 +1,12 @@
-from aiogram import Dispatcher
+# from aiogram import Dispatcher
 import logging
+from typing import Generator, Optional
 
 from telegram_bot.aphorisms.support_soul import Excerpt
 import telegram_bot.logs.config.config_log
 from telegram_bot.matematica.equations_new import MathNumericalEquation
 
-from telegram_bot.setting.config import SLOGAN_APHORISM, NUMBER, FRACTION
+from telegram_bot.setting.config import NUMBER, FRACTION
 from telegram_bot.setting.config import NUMBER_SIMPLE_EQUATIONS, \
     NUMBER_CHECK_FRACTIONS, LIST_OF_NEGATIVES, SLOGAN_APHORISM
 from telegram_bot.setting.config import \
@@ -13,15 +14,17 @@ from telegram_bot.setting.config import \
 from telegram_bot.setting.config import \
     VALUE_MIN_FOR_SIMPLE_EQUATIONS_START as VMIN_SE
 
-logger = logging.getLogger('matic')
+logger = logging.getLogger('mathic')
 
 
 class MaticBotElem:
     """Класс оперирует уравнениями"""
-    def __init__(self, cod=None):
+    def __init__(self, cod: Optional[str] = None):
         # объект содержащий цитаты
         self.quantity_equations = 10
         self.excerpts = Excerpt()
+        # Коэффициент вывода цитаты-афоризма
+        self.ratio_correct_answer = 19
         self.username = None
         # объект содержит элементы отображения для Bot-а
         self.message_dict = {'number_test': 0,
@@ -34,13 +37,14 @@ class MaticBotElem:
         self.game.cod = cod
         # Изменение уровня сложности.
         # Возвращает сгенерированный список [min, max] значений
-        self.gen_level_difficulty = None
+        self.gen_level_difficulty: Optional[Generator] = None
         # Генератор создания уравнения. Возвращает сгенерированное уравнение
-        self.generator_equations = None
+        self.generator_equations: Optional[Generator] = None
 
-    def launch(self, math_cod):
+    def launch(self, math_cod: str):
         """Запускает конструктор класса"""
         self.game.cod = math_cod
+        self.message_dict['number_test'] = 0
         self.excerpts.string_default = SLOGAN_APHORISM
         self.message_dict['excerpt'] = SLOGAN_APHORISM
         if self.game.cod == NUMBER:
@@ -50,29 +54,34 @@ class MaticBotElem:
             self.generator_equations = None
 
     def fabric_simple_equations(self):
-        """Создает и возвращает уравнение простые числа"""
+        """
+        Создает и возвращает уравнение 'простые числа'
+        :return:
+        equation: str уравнение
+        right_answer: правильный ответ
+        """
+        # """Создает и возвращает уравнение и ответ """
         while True:
-            # формируем сложность
+            # формирование сложности
             interval_values = next(self.gen_level_difficulty)
             self.game.min_ = interval_values[0]
             self.game.max_ = interval_values[1]
 
             equation: str = self.game.get_equation()
-            right_answer = self.game.right_answer
+            right_answer: int = self.game.right_answer
             yield equation, right_answer
 
     def simple_equations(self):
         """
         Функция 'простые уравнения' запускает УЧЁБУ по уравнениям с одним
         неизвестным для целых чисел в выражении вида a+(b+c)=d
-        :param quantity: количество уравнений
         """
         self.quantity_equations = NUMBER_SIMPLE_EQUATIONS
         # Изменение уровня сложности
         # возвращает генератор списка [min, max]
         self.gen_level_difficulty = self.chang_dif_gen_simple_equations()
         logger.info('Числовые уравнения. Запуск')
-        # Утверждение фабрики уравнений
+        # Создание фабрики уравнений
         self.generator_equations = self.fabric_simple_equations()
 
     def chang_dif_gen_simple_equations(self):
@@ -80,7 +89,7 @@ class MaticBotElem:
         Функция генерирует значение интервала чисел в уравнении.
         Возвращает список [min, max]
         """
-        # interval_values = [10, 20] default
+        # interval_values = [10, 20] :default
         number = self.quantity_equations + 1
         interval_values = [VMIN_SE, VMAX_SE]
         for i in range(number):
@@ -99,6 +108,25 @@ class MaticBotElem:
         logger.info(str_doc_num_test)
 
         return equation
+
+    # Методы отвечающие за вывод цитаты
+    def count_ratio_correct_answer(self, value):
+        """Увеличение коэффициента в зависимости от правильности ответа"""
+        if value:
+            self.ratio_correct_answer += 4
+        else:
+            self.ratio_correct_answer += 10
+
+        return self.ratio_correct_answer
+
+    def check_ratio_print_ex(self):
+        """Проверка значения коэффициента на 'больше 18'"""
+        if value := bool(int(self.ratio_correct_answer/20)):
+            self.ratio_correct_answer = 0
+            # Если не 0 уравнение получаем новую цитату
+            if self.message_dict['number_test']:
+                self.message_dict['excerpt'] = self.excerpts.get_new_excerpt
+        return value
 
 
 if __name__ == '__main__':

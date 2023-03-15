@@ -1,7 +1,8 @@
 import logging
-from fractions import Fraction
+# from fractions import Fraction
 from random import randint
-from time import sleep
+# from time import sleep
+from typing import Optional
 
 # from telegram_bot.aphorisms.support_soul import Excerpt
 import telegram_bot.logs.config.config_log
@@ -22,7 +23,7 @@ class MathNumericalEquation:
         self.d = None
         self.sign_first = ''
         self.sign_second = ''
-        self.right_answer = None
+        self.right_answer: Optional[int] = None
         self.min_ = 10
         self.max_ = 20
         # self.cod = None
@@ -80,7 +81,7 @@ class MathNumericalEquation:
         """
         Функция составляет учебное уравнение и возвращает его в виде строки
         Одно из чисел скрывается, случайным образом.
-        Его значение записывается в переменную 'answer'
+        Его значение записывается в атрибут 'right_answer'
         """
         # Список слагаемых для выражения a + (b + c) = d
         terms_list = [self.d, self.a, self.b, self.c]
@@ -127,33 +128,21 @@ class MathNumericalEquation:
         """
         return True if answer == self.right_answer else False
 
-    def clear_all(self):
-        """Функция обнуляет все значения"""
-        self.a = None
-        self.b = None
-        self.c = None
-        self.d = None
-        self.sign_first = ''
-        self.sign_second = ''
-        self.right_answer = None
-
+    # def clear_all(self):
+    #     """Функция обнуляет все значения"""
+    #     self.a = None
+    #     self.b = None
+    #     self.c = None
+    #     self.d = None
+    #     self.sign_first = ''
+    #     self.sign_second = ''
+    #     self.right_answer = None
+    #
     def generation_number(self):
         """
         Функция генерирует случайное целое число в диапазоне i_min : i_max
         """
         return randint(self.min_, self.max_)
-
-    # def run(self):
-    #     """Функция запускает процесс 'решения уравнений' """
-    #     # Создаем выражение a+(b+c)=d
-    #     # self.set_values('number')
-    #     self.set_values(self.cod)
-    #     # Заполняем элементами
-    #     self.get_values()
-    #     # Составляем уравнение
-    #     finish_string = self.create_rebus()
-    #     # Отображаем уравнение. Ввод и проверка ответа
-    #     # self.evaluation(finish_string)
 
     def get_equation(self):
         """Функция выдает уравнение"""

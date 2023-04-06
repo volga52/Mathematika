@@ -5,7 +5,6 @@ from typing import Generator, Optional
 from telegram_bot.aphorisms.support_soul import Excerpt
 import telegram_bot.logs.config.config_log
 from telegram_bot.matematica.equations_new import MathNumericalEquation
-
 from telegram_bot.setting.config import NUMBER, FRACTION
 from telegram_bot.setting.config import NUMBER_SIMPLE_EQUATIONS, \
     NUMBER_CHECK_FRACTIONS, LIST_OF_NEGATIVES, SLOGAN_APHORISM
@@ -13,24 +12,25 @@ from telegram_bot.setting.config import \
     VALUE_MAX_FOR_SIMPLE_EQUATIONS_START as VMAX_SE
 from telegram_bot.setting.config import \
     VALUE_MIN_FOR_SIMPLE_EQUATIONS_START as VMIN_SE
+from telegram_bot.setting.messages import MISPRINT, DENIAL, YES, \
+    MATICBOTELEM_MES_DICT
 
 logger = logging.getLogger('mathic')
 
 
 class MaticBotElem:
     """Класс оперирует уравнениями"""
+
     def __init__(self, cod: Optional[str] = None):
         # объект содержащий цитаты
         self.quantity_equations = 10
         self.excerpts = Excerpt()
         # Коэффициент вывода цитаты-афоризма
         self.ratio_correct_answer = 19
+        self.ratio_correct_change = 4
         self.username = None
         # объект содержит элементы отображения для Bot-а
-        self.message_dict = {'number_test': 0,
-                             'equation': None,
-                             'excerpt': None,
-                             'answer': None}
+        self.message_dict = MATICBOTELEM_MES_DICT
         # экземпляр класса вычисляющего уравнение
         self.game = MathNumericalEquation()
         # Вид уравнений, тип математических элементов
@@ -60,7 +60,6 @@ class MaticBotElem:
         equation: str уравнение
         right_answer: правильный ответ
         """
-        # """Создает и возвращает уравнение и ответ """
         while True:
             # формирование сложности
             interval_values = next(self.gen_level_difficulty)
@@ -98,32 +97,36 @@ class MaticBotElem:
             yield interval_values
 
     def get_main(self):
+        """Метод получить 'главное' уравнение и ответ"""
         equation, right_answer = next(self.generator_equations)
-        # equation, right_answer = a
         self.message_dict['equation'] = equation
         self.message_dict['answer'] = right_answer
-        # меняем номер уравнения
-        self.message_dict['number_test'] += 1
+
+        self.message_dict['number_test'] += 1   # меняем номер уравнения
+
         str_doc_num_test = f"Уравнение {self.message_dict.get('number_test')}"
         logger.info(str_doc_num_test)
 
         return equation
 
-    # Методы отвечающие за вывод цитаты
-    def count_ratio_correct_answer(self, value):
+    # Методы участвующие в процессе вывода цитаты
+    def count_ratio_correct_answer(self, value, ratio: Optional[int] = None):
         """Увеличение коэффициента в зависимости от правильности ответа"""
-        if value:
-            self.ratio_correct_answer += 4
-        else:
-            self.ratio_correct_answer += 10
+        shift = ratio if ratio else self.ratio_correct_change
+        modification_dict = {YES: shift,
+                             MISPRINT: shift + 6,
+                             DENIAL: 21}
+        modification = modification_dict.get(value, 21)
+
+        self.ratio_correct_answer += modification
 
         return self.ratio_correct_answer
 
     def check_ratio_print_ex(self):
         """Проверка значения коэффициента на 'больше 18'"""
-        if value := bool(int(self.ratio_correct_answer/20)):
+        if value := bool(int(self.ratio_correct_answer / 20)):
             self.ratio_correct_answer = 0
-            # Если не 0 уравнение получаем новую цитату
+            # Если не нулевое уравнение получаем новую цитату
             if self.message_dict['number_test']:
                 self.message_dict['excerpt'] = self.excerpts.get_new_excerpt
         return value

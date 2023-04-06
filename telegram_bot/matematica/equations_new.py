@@ -1,15 +1,11 @@
 import logging
 # from fractions import Fraction
 from random import randint
-# from time import sleep
 from typing import Optional
 
-# from telegram_bot.aphorisms.support_soul import Excerpt
 import telegram_bot.logs.config.config_log
 from telegram_bot.setting.config import NUMBER, FRACTION
 
-YES = 'Верно'
-NO = 'Не верно'
 logger = logging.getLogger('mathic')
 
 
@@ -121,23 +117,13 @@ class MathNumericalEquation:
                       f' = {terms_list[0]}'
         return test_string
 
-    def eval_answer(self, answer):
-        """
-        Функция принимает ответ, оценивает его.
-        Возвращает оценку Да или Нет
-        """
-        return True if answer == self.right_answer else False
+    # def eval_answer(self, answer):
+    #     """
+    #     Функция принимает ответ, оценивает его.
+    #     Возвращает оценку Да или Нет
+    #     """
+    #     return True if answer == self.right_answer else False
 
-    # def clear_all(self):
-    #     """Функция обнуляет все значения"""
-    #     self.a = None
-    #     self.b = None
-    #     self.c = None
-    #     self.d = None
-    #     self.sign_first = ''
-    #     self.sign_second = ''
-    #     self.right_answer = None
-    #
     def generation_number(self):
         """
         Функция генерирует случайное целое число в диапазоне i_min : i_max

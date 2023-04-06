@@ -11,8 +11,9 @@ from telegram_bot.setting.config import \
     VALUE_MIN_FOR_SIMPLE_EQUATIONS_START as VMIN_SE
 
 from telegram_bot.matematica.fractions_my_math import GenerationFractions
-from telegram_bot.matematica.equations import MathNumericalEquation
-from telegram_bot.aphorisms.support_soul import Excerpt
+from telegram_bot.matematica.equations_new import MathNumericalEquation
+# from telegram_bot.aphorisms.support_soul import Excerpt
+from aphorisms.support_soul import ExcerptOld as Excerpt
 
 # from telegram_bot.setting.config import BOT_TOKEN
 

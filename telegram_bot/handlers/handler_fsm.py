@@ -1,17 +1,17 @@
 """Обработчик машинного состояния"""
-# from asyncio import sleep
-
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram import types
+from typing import Generator, Optional
 
+from telegram_bot.FSM.check_value import CheckValue
 from telegram_bot.FSM.equation_fsm import FSMEquation
 from telegram_bot.handlers.handler import Handler
 from telegram_bot.setting.config import DICT_TASK
 from telegram_bot.setting.messages import MATICA_PREVIEW, DICT_MES_PREVIEW, \
-    CANCEL_MES_PREVIEW, FIRST_EXC_ANSWER
-from typing import Generator, Optional
+    CANCEL_MES_PREVIEW, FIRST_EXC_ANSWER, ERROR_CORRECTION, YES, MISPRINT, \
+    DENIAL
 
 
 class HandlerFSM(Handler):
@@ -21,6 +21,7 @@ class HandlerFSM(Handler):
         self.storage = MemoryStorage()
         super().__init__(dp=dp)
         self.dp.storage = self.storage
+        self.inspector = CheckValue()
 
         self.gen: Optional[Generator] = None
         self.math_cod = None
@@ -45,20 +46,17 @@ class HandlerFSM(Handler):
                                     FIRST_EXC_ANSWER[0],
                                     reply_markup=self.markup.remove_menu())
         await FSMEquation.first.set()
-        # await self.first_state_equation(message, state)
         await self.first_state_equation()
 
     async def math_init(self):
         """Метод запускает создание математических выражений"""
         # Инициация элемента математики
-        # По окончании требуется очистка
+        # *** По окончании требуется очистка
         self.dp.math_element.launch(self.math_cod)
         # Определение количества уравнений
         quantity_tests = self.dp.math_element.quantity_equations
         self.gen = self.generator(quantity_tests)
 
-    # async def first_state_equation(self, message: types.Message,
-    #                                state: FSMContext):
     async def first_state_equation(self):
         """Обработка первого запроса машинного состояния"""
         await self.math_init()
@@ -82,23 +80,36 @@ class HandlerFSM(Handler):
                                   state: FSMContext):
         """Обработка-работа с уравнениями"""
         await FSMEquation.excerpt.set()
-        # Реакция на правильность ответа
-        if status := int(message.text) == \
-                     self.dp.math_element.message_dict['answer']:
-            reply_text = ('Верно', 'Yes')
-        else:
-            reply_text = ('Не правильно', 'No')
+        # Полученный текст сразу проверяем
+        response = self.inspector(message.text)  # ->число(хорошо); нет->кортеж
+        # ### Реакция на результат
+
+        try:  # Если получили число
+            response = int(response)
+
+            if response == self.dp.math_element.message_dict['answer']:
+                reply_text = ('Верно', YES)
+            else:
+                reply_text = ('Не правильно', MISPRINT)
+
+        except ValueError:  # Ответ пользователя не число
+            test_dict = {
+                MISPRINT: f'Опечатка {ERROR_CORRECTION}',
+                DENIAL: 'Не хорошо'}
+
+            reply_text = (test_dict[response], response)
+            print(f'No number: react: {reply_text}')
 
         await message.reply(reply_text[0])
         message.text = reply_text[1]
         # Стадия 'вывод цитаты'
         # _Корректировка коэффициента вывода цитаты
-        self.dp.math_element.count_ratio_correct_answer(status)
+        self.dp.math_element.count_ratio_correct_answer(reply_text[1])
         # _Переход в другую стадию
         await self.excerpt_state_equation(message, state)
 
     async def new_equation(self, message: types.Message, state: FSMContext):
-        if message.text == 'Yes':
+        if message.text == YES:
             try:
                 gen = next(self.gen)
                 await message.reply(f"Test {gen} ", reply=False)
@@ -159,3 +170,8 @@ class HandlerFSM(Handler):
         """Генератор порядкового номера тренировочного уравнения"""
         for i in range(number):
             yield i + 1
+    #
+    # @staticmethod
+    # def check_response(response):
+    #     inspection = CheckValue()
+    #     return inspection(response)

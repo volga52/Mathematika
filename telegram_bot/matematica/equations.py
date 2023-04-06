@@ -1,3 +1,4 @@
+'''Устаревший вариант Не используется'''
 import logging
 from fractions import Fraction
 from random import randint
@@ -6,7 +7,7 @@ from time import sleep
 from telegram_bot.aphorisms.support_soul import Excerpt
 import telegram_bot.logs.config.config_log
 
-
+'''Устаревший вариант Не используется'''
 YES = 'Верно'
 NO = 'Не верно'
 logger = logging.getLogger('mathic')

@@ -25,7 +25,8 @@ class Settings(BaseSettings):
         # (относительно текущей рабочей директории)
         # env_file = '.env'
         # env_file = f"{pathlib.Path(__file__).resolve().parent}/.env"
-        env_file = f"{pathlib.Path(__file__).resolve().parent.parent.parent}/.env"
-        print(env_file)
+        # env_file = f"{pathlib.Path(__file__).resolve().parent.parent.parent}/.env"
+        env_file = "/etc/secrets/.env"
+        # print(env_file)
         # Кодировка читаемого файла
         env_file_encoding = 'utf-8'

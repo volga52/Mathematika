@@ -24,6 +24,8 @@ class Settings(BaseSettings):
         # Имя файла, откуда будут прочитаны данные
         # (относительно текущей рабочей директории)
         # env_file = '.env'
-        env_file = f"{pathlib.Path(__file__).resolve().parent}/.env"
+        # env_file = f"{pathlib.Path(__file__).resolve().parent}/.env"
+        env_file = f"{pathlib.Path(__file__).resolve().parent.parent.parent}/.env"
+        print(env_file)
         # Кодировка читаемого файла
         env_file_encoding = 'utf-8'
